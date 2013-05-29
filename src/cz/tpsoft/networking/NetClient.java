@@ -73,6 +73,10 @@ public abstract class NetClient {
     public Socket getSocket() {
         return socket;
     }
+    
+    public boolean isConnected() {
+        return !getSocket().isClosed();
+    }
 
     public ObjectInputStream getInputStream() {
         return inputStream;
@@ -132,13 +136,19 @@ public abstract class NetClient {
     }
     
     public synchronized void sendMessage(Message message) {
-        try {
-            getOutputStream().writeObject(message);
-        } catch (IOException ex) {
+        if (isConnected()) {
+            try {
+                getOutputStream().writeObject(message);
+            } catch (IOException ex) {
+                logger.log(
+                        "exception during sending message to server",
+                        ConsoleLogger.Type.ERROR);
+                ex.printStackTrace(System.err);
+            }
+        } else {
             logger.log(
-                    "exception during sending message to server",
+                    "attempt to send message when not connected",
                     ConsoleLogger.Type.ERROR);
-            ex.printStackTrace(System.err);
         }
     }
     

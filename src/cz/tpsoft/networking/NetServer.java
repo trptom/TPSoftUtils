@@ -104,6 +104,10 @@ public abstract class NetServer {
             return socket;
         }
 
+        public boolean isConnected() {
+            return !getSocket().isClosed();
+        }
+
         public ObjectOutputStream getOutputStream() {
             return outputStream;
         }
@@ -261,14 +265,23 @@ public abstract class NetServer {
     }
     
     public synchronized void sendTo(Client client, Message message) {
-        try {
-            client.getOutputStream().writeObject(message);
-            messageSent(client, message);
-        } catch (IOException ex) {
+        if (client.isConnected()) {
+            try {
+                client.getOutputStream().writeObject(message);
+                messageSent(client, message);
+            } catch (IOException ex) {
+                logger.log(
+                        "exception during sending message ("
+                        + message.toString() + ") to " + client.toString(),
+                        ConsoleLogger.Type.ERROR);
+                ex.printStackTrace(System.err);
+            }
+        } else {
             logger.log(
-                    "exception during sending message (" + message.toString() + ") to client " + client.getIp(),
+                    "attempt to send message ("
+                    + message.toString() + ") to disconnected client ("
+                    + client.toString() + ")",
                     ConsoleLogger.Type.ERROR);
-            ex.printStackTrace(System.err);
         }
     }
     
