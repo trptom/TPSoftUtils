@@ -263,6 +263,7 @@ public abstract class NetServer {
     public synchronized void sendTo(Client client, Message message) {
         try {
             client.getOutputStream().writeObject(message);
+            messageSent(client, message);
         } catch (IOException ex) {
             logger.log(
                     "exception during sending message (" + message.toString() + ") to client " + client.getIp(),
@@ -281,12 +282,10 @@ public abstract class NetServer {
         clientDisconnected(client);
     }
     
-    public void disconnectAllClients() {
+    public synchronized void disconnectAllClients() {
         for (Client client : getClients()) {
             sendTo(client, Message.DISCONNECT);
         }
-        
-        while (getClients().size() > 0) {}
     }
     
     protected abstract boolean acceptClient(Socket socket);
@@ -294,4 +293,5 @@ public abstract class NetServer {
     protected abstract void clientAccepted(Client client);
     protected abstract void clientDisconnected(Client client);
     protected abstract void messageReceived(Client client, Message message);
+    protected abstract void messageSent(Client client, Message message);
 }
