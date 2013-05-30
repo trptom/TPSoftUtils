@@ -64,7 +64,7 @@ public abstract class NetClient {
         }
     }
     
-    private Socket socket;
+    private Socket socket = null;
     private ConsoleLogger logger = new ConsoleLogger();
     private NetClient.Listener listener = new NetClient.Listener();
     private ObjectOutputStream outputStream;
@@ -75,6 +75,9 @@ public abstract class NetClient {
     }
     
     public boolean isConnected() {
+        if (socket == null) {
+            return false;
+        }
         return !getSocket().isClosed();
     }
 
