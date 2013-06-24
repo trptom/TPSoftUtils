@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tpsoft.networking.frames;
+package cz.tpsoft.utils.networking.frames;
 
-import cz.tpsoft.networking.NetClient;
+import cz.tpsoft.utils.networking.NetClient;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;

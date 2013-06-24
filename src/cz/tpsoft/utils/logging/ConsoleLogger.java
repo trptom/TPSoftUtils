@@ -1,4 +1,4 @@
-package cz.tpsoft.logging;
+package cz.tpsoft.utils.logging;
 
 import java.util.Calendar;
 

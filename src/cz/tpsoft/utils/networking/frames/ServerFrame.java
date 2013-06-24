@@ -1,9 +1,9 @@
-package cz.tpsoft.networking.frames;
+package cz.tpsoft.utils.networking.frames;
 
-import cz.tpsoft.networking.Message;
-import cz.tpsoft.networking.NetServer;
-import cz.tpsoft.networking.frames.server.components.ContentPanel;
-import cz.tpsoft.networking.frames.server.components.Menu;
+import cz.tpsoft.utils.networking.Message;
+import cz.tpsoft.utils.networking.NetServer;
+import cz.tpsoft.utils.networking.frames.server.components.ContentPanel;
+import cz.tpsoft.utils.networking.frames.server.components.Menu;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;

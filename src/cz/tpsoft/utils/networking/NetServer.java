@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tpsoft.networking;
+package cz.tpsoft.utils.networking;
 
-import cz.tpsoft.logging.ConsoleLogger;
+import cz.tpsoft.utils.logging.ConsoleLogger;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -185,13 +185,15 @@ public abstract class NetServer {
                             return;
                         }
 
+                        Client client = new Client(socket);
+                        
                         if (NetServer.this.acceptClient(socket)) {
                             NetServer.this.logger.log(
                                     "client from "
                                     + socket.getInetAddress().getHostAddress()
                                     + " accepted",
                                     ConsoleLogger.Type.INFO);
-                            NetServer.this.clients.addLast(new Client(socket));
+                            NetServer.this.clients.addLast(client);
                             NetServer.this.clients.getLast().startListening();
                             NetServer.this.logger.log(
                                     "current clients count: "
@@ -199,6 +201,7 @@ public abstract class NetServer {
                                     ConsoleLogger.Type.DEBUG);
                             NetServer.this.clientAccepted(NetServer.this.clients.getLast());
                         } else {
+                            NetServer.this.sendTo(client, Message.ACCESS_DENIED);
                             NetServer.this.logger.log(
                                     "client from "
                                     + socket.getInetAddress().getHostAddress()

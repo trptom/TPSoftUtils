@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tpsoft.networking.frames.server.components;
+package cz.tpsoft.utils.networking.frames.server.components;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

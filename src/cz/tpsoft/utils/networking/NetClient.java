@@ -1,6 +1,6 @@
-package cz.tpsoft.networking;
+package cz.tpsoft.utils.networking;
 
-import cz.tpsoft.logging.ConsoleLogger;
+import cz.tpsoft.utils.logging.ConsoleLogger;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -37,10 +37,14 @@ public abstract class NetClient {
                     }
                     
                     if (o instanceof Message) {
+                        Message msg = (Message)o;
                         if (o.equals(Message.DISCONNECT)) {
                             NetClient.this.disconnect();
                         }
-                        NetClient.this.messageReceived((Message)o);
+                        if (msg.equalsIgnoreData(Message.ACCESS_DENIED)) {
+                            NetClient.this.disconnect();
+                        }
+                        NetClient.this.messageReceived(msg);
                     } else {
                         NetClient.this.logger.log(
                                 "non message type received from server",

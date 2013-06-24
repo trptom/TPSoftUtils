@@ -1,4 +1,4 @@
-package cz.tpsoft.networking;
+package cz.tpsoft.utils.networking;
 
 import java.io.Serializable;
 
@@ -11,6 +11,12 @@ public class Message<DataType extends Serializable> implements Serializable {
     public static final Message DISCONNECT = new Message(0, null) {
         @Override public String toString() {
             return "Message[DISCONNECT]";
+        }
+    };
+    
+    public static final Message ACCESS_DENIED = new Message(0, null) {
+        @Override public String toString() {
+            return "Message[ACCESS_DENIED]";
         }
     };
     
@@ -52,5 +58,15 @@ public class Message<DataType extends Serializable> implements Serializable {
     @Override
     public String toString() {
         return "Message[" + message + (data != null ? (" | " + data.toString()) : "") + "]";
+    }
+    
+    public boolean equalsIgnoreData(Object obj) {
+        if (obj instanceof Message) {
+            Message tmp = (Message)obj;
+            if (tmp.message == message) {
+                return true;
+            }
+        }
+        return false;
     }
 }

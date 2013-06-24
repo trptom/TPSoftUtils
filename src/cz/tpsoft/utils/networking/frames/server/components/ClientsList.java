@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.tpsoft.networking.frames.server.components;
+package cz.tpsoft.utils.networking.frames.server.components;
 
-import cz.tpsoft.networking.NetServer;
+import cz.tpsoft.utils.networking.NetServer;
 import java.util.LinkedList;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
