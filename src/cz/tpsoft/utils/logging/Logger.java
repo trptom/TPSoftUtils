@@ -12,8 +12,10 @@ public class Logger {
     public static final String TYPE_ERROR = "ERROR";
     public static final String TYPE_INFO = "INFO";
     public static final String TYPE_WARNING = "WARNING";
+    public static final String TYPE_DEBUG = "DEBUG";
     private static String outputFile = null;
     public static boolean enabled = true;
+    public static boolean logDebug = true;
     
     /**
      * @return true, pokud je nastaven vystupni soubor, kam se ma logovat,
@@ -73,25 +75,29 @@ public class Logger {
      * @see #setOutputFile(java.lang.String) 
      */
     public static boolean log(String text, String type) {
-        if (isTurnedOn() && isEnabled()) {
-            BufferedWriter bw = null;
-            FileWriter fw;
-            try {
-                fw = getFileWriter();
-                bw = new BufferedWriter(fw);
-                bw.append(generateLog(text, type));
-                return true;
-            } catch (IOException ex) {
-                ex.printStackTrace(System.out);
-                return false;
-            } finally {
-                if (bw != null) {
-                    try {
-                        bw.close();
-                    }catch (IOException ex) {
-                        ex.printStackTrace(System.out);
+        if (type != TYPE_DEBUG || logDebug) {
+            if (isTurnedOn() && isEnabled()) {
+                BufferedWriter bw = null;
+                FileWriter fw;
+                try {
+                    fw = getFileWriter();
+                    bw = new BufferedWriter(fw);
+                    bw.append(generateLog(text, type));
+                    return true;
+                } catch (IOException ex) {
+                    ex.printStackTrace(System.out);
+                    return false;
+                } finally {
+                    if (bw != null) {
+                        try {
+                            bw.close();
+                        }catch (IOException ex) {
+                            ex.printStackTrace(System.out);
+                        }
                     }
                 }
+            } else {
+                return false;
             }
         } else {
             return false;
