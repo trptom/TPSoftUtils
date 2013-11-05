@@ -155,6 +155,36 @@ public class NetWork {
         }
     }
     
+    public static boolean delete(String ftpServer, String user, String password,
+            String fileName) throws MalformedURLException,
+            IOException {
+        if (ftpServer != null && fileName != null) {
+            StringBuilder sb = new StringBuilder("ftp://");
+            // check for authentication else assume its anonymous access.
+            if (user != null && password != null) {
+                sb.append(user);
+                sb.append(':');
+                sb.append(password);
+                sb.append('@');
+            }
+            sb.append(ftpServer);
+            sb.append('/');
+            sb.append(fileName);
+            /*
+             * type ==&gt; a=ASCII mode, i=image (binary) mode, d= file
+             * directory listing
+             */
+            sb.append(";type=i");
+         
+            // TODO mazani
+            
+            return false;
+        } else {
+            System.out.println("Input not available");
+            return false;
+        }
+    }
+    
     public static String getWebPageSource(String url) throws IOException {
         URL u;
         InputStream is = null;
