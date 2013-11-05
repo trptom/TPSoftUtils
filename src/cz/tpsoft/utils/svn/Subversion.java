@@ -52,25 +52,32 @@ public class Subversion {
         }
         this.folder = folder;
     }
+
+    public String getFolder() {
+        return folder;
+    }
     
     public int getCurrentRevision() throws IOException {
         return getCurrentRevision(null);
     }
     
     public int getCurrentRevision(String path) throws IOException {
-        Process p = Runtime.getRuntime().exec(
-            "cmd.exe /c d: & cd \"" + folder + "\" & svn info" + (path != null ? (" \"" + path + "\"") : "")
-        );
+        if (path.endsWith("\\")) {
+            path = path.substring(0, path.length()-1);
+        }
+        
+        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn info" + (path != null ? (" \"" + path + "\"") : "");
+        
+        System.out.println("processing: " + cmd);
+        Process p = Runtime.getRuntime().exec(cmd);
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = reader.readLine();
         String rev = null;
         
         while (line != null) {
-            System.out.println(line);
             if (line.startsWith("Revision: ")) {
                 rev = line.split("Revision: ")[1];
-                System.out.println(line);
                 line = null;
             } else {
                 line = reader.readLine();
@@ -85,11 +92,16 @@ public class Subversion {
     }
     
     public LinkedList<DiffFile> diff(int r1, int r2, String path) throws IOException {
+        if (path.endsWith("\\")) {
+            path = path.substring(0, path.length()-1);
+        }
+        
         LinkedList<DiffFile> ret = new LinkedList<>();
         
-        Process p = Runtime.getRuntime().exec(
-            "cmd.exe /c d: & cd \"" + folder + "\" & svn diff --summarize -r " + r1 + ":" + r2 + (path != null ? (" \"" + path + "\"") : "")
-        );
+        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn diff --summarize -r " + r1 + ":" + r2 + (path != null ? (" \"" + path + "\"") : "");
+        
+        System.out.println("processing: " + cmd);
+        Process p = Runtime.getRuntime().exec(cmd);
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = reader.readLine();
@@ -120,14 +132,16 @@ public class Subversion {
         return ret;
     }
     
-    public static void main(String[] args) {
-        Subversion svn = new Subversion("d:\\Dokumenty\\NetBeansProjects\\MSDS Profi Manager\\");
-        try {
-            System.out.println(svn.getCurrentRevision());
-            
-            svn.diff(100, 99, null);
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
+    public void update(String path) throws IOException {
+        if (path.endsWith("\\")) {
+            path = path.substring(0, path.length()-1);
         }
+        
+        LinkedList<DiffFile> ret = new LinkedList<>();
+        
+        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn update" + (path != null ? (" \"" + path + "\"") : "");
+        
+        System.out.println("processing: " + cmd);
+        Process p = Runtime.getRuntime().exec(cmd);
     }
 }
