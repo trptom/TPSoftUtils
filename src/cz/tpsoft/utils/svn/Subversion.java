@@ -14,7 +14,12 @@ import java.util.LinkedList;
  * @author tomas.praslicak
  */
 public class Subversion {
-    public static class DiffFile {
+    public static class DiffFile implements Comparable<DiffFile> {
+        @Override
+        public int compareTo(DiffFile o) {
+            return getName().compareTo(o.getName());
+        }
+        
         public static enum Status {
             MODIFIED,
             ADDED,
