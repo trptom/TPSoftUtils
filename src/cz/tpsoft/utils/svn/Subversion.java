@@ -15,11 +15,6 @@ import java.util.LinkedList;
  */
 public class Subversion {
     public static class DiffFile implements Comparable<DiffFile> {
-        @Override
-        public int compareTo(DiffFile o) {
-            return getName().compareTo(o.getName());
-        }
-        
         public static enum Status {
             MODIFIED,
             ADDED,
@@ -45,6 +40,11 @@ public class Subversion {
         @Override
         public String toString() {
             return getName() + ": " + getStatus().toString();
+        }
+        
+        @Override
+        public int compareTo(DiffFile o) {
+            return getName().compareTo(o.getName());
         }
     }
     
@@ -76,11 +76,20 @@ public class Subversion {
         System.out.println("processing: " + cmd);
         Process p = Runtime.getRuntime().exec(cmd);
         
+        try {
+            int i = p.waitFor();
+            System.out.println("process state: " + i);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            return -1;
+        }
+        
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = reader.readLine();
         String rev = null;
         
         while (line != null) {
+            System.out.println(">> " + line);
             if (line.startsWith("Revision: ")) {
                 rev = line.split("Revision: ")[1];
                 line = null;
@@ -103,15 +112,25 @@ public class Subversion {
         
         LinkedList<DiffFile> ret = new LinkedList<>();
         
-        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn diff --summarize -r " + r1 + ":" + r2 + (path != null ? (" \"" + path + "\"") : "");
+        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn diff --summarize -r " + r1 + ":" + r2 + (path != null ? (" " + path) : "");
         
         System.out.println("processing: " + cmd);
         Process p = Runtime.getRuntime().exec(cmd);
+        
+        try {
+            int i = p.waitFor();
+            System.out.println("process state: " + i);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            return null;
+        }
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line = reader.readLine();
         
         while (line != null) {
+            System.out.println(">> " + line);
+            
             String fileName = line.substring(8);
             String atts = line.substring(0, 8);
             DiffFile.Status status = null;
@@ -134,6 +153,8 @@ public class Subversion {
             line = reader.readLine();
         }
         
+        System.out.println("processing finished");
+        
         return ret;
     }
     
@@ -142,11 +163,47 @@ public class Subversion {
             path = path.substring(0, path.length()-1);
         }
         
-        LinkedList<DiffFile> ret = new LinkedList<>();
-        
         String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn update" + (path != null ? (" \"" + path + "\"") : "");
         
         System.out.println("processing: " + cmd);
         Process p = Runtime.getRuntime().exec(cmd);
+        
+        try {
+            int i = p.waitFor();
+            System.out.println("process state: " + i);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            return;
+        }
+    }
+    
+    public void addAll(String pathOrFile) throws IOException {
+        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn add " + pathOrFile;
+        
+        System.out.println("processing: " + cmd);
+        Process p = Runtime.getRuntime().exec(cmd);
+        
+        try {
+            int i = p.waitFor();
+            System.out.println("process state: " + i);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            return;
+        }
+    }
+    
+    public void commit(String path, String message) throws IOException {
+        String cmd = "cmd.exe /c d: & cd \"" + folder + "\" & svn commit -m \"" + message + "\"" + (path != null ? (" " + path) : "");
+        
+        System.out.println("processing: " + cmd);
+        Process p = Runtime.getRuntime().exec(cmd);
+        
+        try {
+            int i = p.waitFor();
+            System.out.println("process state: " + i);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            return;
+        }
     }
 }
